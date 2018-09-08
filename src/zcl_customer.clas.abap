@@ -87,7 +87,7 @@ CLASS zcl_customer IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zif_customer~get_address.
-    address = me->customer_provider->get_address( ).
+    address = |{ zif_customer~get_street( ) }, { zif_customer~get_city( ) } { zif_customer~get_postal_code( ) }, { zif_customer~get_country_text( ) }|.
   ENDMETHOD.
 
   METHOD zif_customer~get.
