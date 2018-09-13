@@ -8,7 +8,7 @@ INTERFACE zif_customer_provider
            city         TYPE snwd_city,
            postal_code  TYPE snwd_postal_code,
            country      TYPE snwd_country,
-           country_text TYPE zdemo_country_text,
+           country_text TYPE landx50,
          END OF customer_type.
 
   METHODS get_node_key

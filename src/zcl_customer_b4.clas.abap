@@ -26,7 +26,7 @@ CLASS zcl_customer_b4 DEFINITION
              city         TYPE snwd_city,
              postal_code  TYPE snwd_postal_code,
              country      TYPE snwd_country,
-             country_text TYPE zdemo_country_text,
+             country_text TYPE landx50,
            END OF customer_type.
 
     DATA: customer_data TYPE customer_type.
@@ -39,25 +39,15 @@ CLASS zcl_customer_b4 DEFINITION
   PRIVATE SECTION.
 ENDCLASS.
 
-CLASS zcl_customer_b4 IMPLEMENTATION.
 
-  METHOD zif_customer~get.
 
-    TRY.
-        DATA(inst) = zif_customer~instances[ node_key = node_key ].
-      CATCH cx_sy_itab_line_not_found.
-        inst-node_key = node_key.
-        inst-instance = NEW zcl_customer_b4(  inst-node_key ).
-        APPEND inst TO zif_customer~instances.
-    ENDTRY.
+CLASS ZCL_CUSTOMER_B4 IMPLEMENTATION.
 
-    instance ?= inst-instance.
-
-  ENDMETHOD.
 
   METHOD constructor.
     load_customer_data( node_key ).
   ENDMETHOD.
+
 
   METHOD load_customer_data.
 
@@ -78,37 +68,46 @@ CLASS zcl_customer_b4 IMPLEMENTATION.
     ENDSELECT.
   ENDMETHOD.
 
-  METHOD zif_customer~get_node_key.
-    node_key = me->customer_data-node_key.
+
+  METHOD zif_customer~get.
+
+    TRY.
+        DATA(inst) = zif_customer~instances[ node_key = node_key ].
+      CATCH cx_sy_itab_line_not_found.
+        inst-node_key = node_key.
+        inst-instance = NEW zcl_customer_b4(  inst-node_key ).
+        APPEND inst TO zif_customer~instances.
+    ENDTRY.
+
+    instance ?= inst-instance.
+
   ENDMETHOD.
+
+
+  METHOD zif_customer~get_address.
+    address = |{ zif_customer~get_street( ) }, { zif_customer~get_city( ) } { zif_customer~get_postal_code( ) }, { zif_customer~get_country_text( ) }|.
+  ENDMETHOD.
+
 
   METHOD zif_customer~get_bp_id.
     bp_id = me->customer_data-bp_id.
   ENDMETHOD.
 
+
   METHOD zif_customer~get_city.
     city = me->customer_data-city.
   ENDMETHOD.
+
 
   METHOD zif_customer~get_company_name.
     company_name = me->customer_data-company_name.
   ENDMETHOD.
 
+
   METHOD zif_customer~get_country.
     country = me->customer_data-country.
   ENDMETHOD.
 
-  METHOD zif_customer~get_postal_code.
-    postal_code = me->customer_data-postal_code.
-  ENDMETHOD.
-
-  METHOD zif_customer~get_street.
-    street = me->customer_data-street.
-  ENDMETHOD.
-
-  METHOD zif_customer~get_address.
-    address = |{ zif_customer~get_street( ) }, { zif_customer~get_city( ) } { zif_customer~get_postal_code( ) }, { zif_customer~get_country_text( ) }|.
-  ENDMETHOD.
 
   METHOD zif_customer~get_country_text.
     TRY.
@@ -128,6 +127,22 @@ CLASS zcl_customer_b4 IMPLEMENTATION.
         ENDIF.
     ENDTRY.
   ENDMETHOD.
+
+
+  METHOD zif_customer~get_node_key.
+    node_key = me->customer_data-node_key.
+  ENDMETHOD.
+
+
+  METHOD zif_customer~get_postal_code.
+    postal_code = me->customer_data-postal_code.
+  ENDMETHOD.
+
+
+  METHOD zif_customer~get_street.
+    street = me->customer_data-street.
+  ENDMETHOD.
+
 
   METHOD zif_customer~get_using_bp_id.
 
@@ -150,5 +165,4 @@ CLASS zcl_customer_b4 IMPLEMENTATION.
           textid = cx_abap_invalid_value=>cx_root.
     ENDIF.
   ENDMETHOD.
-
 ENDCLASS.
