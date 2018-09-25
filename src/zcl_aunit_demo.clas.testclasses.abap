@@ -10,7 +10,7 @@ CLASS ltc_aunit_demo DEFINITION FOR TESTING
 
     METHODS teardown.
 
-    METHODS check_value    FOR TESTING RAISING cx_static_check.
+    METHODS check_value        FOR TESTING RAISING cx_static_check.
     METHODS check_add_value    FOR TESTING RAISING cx_static_check.
 
 ENDCLASS.
