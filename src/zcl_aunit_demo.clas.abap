@@ -9,8 +9,8 @@ CLASS zcl_aunit_demo DEFINITION
     METHODS get_value
       RETURNING
         VALUE(rv_value) TYPE int4.
-    methods add
-    importing !iv_add type int4.
+    METHODS add
+      IMPORTING !iv_add TYPE int4.
 
   PROTECTED SECTION.
   PRIVATE SECTION.

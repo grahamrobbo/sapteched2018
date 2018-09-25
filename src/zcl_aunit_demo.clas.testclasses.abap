@@ -30,7 +30,6 @@ CLASS ltc_aunit_demo IMPLEMENTATION.
                                         exp = 3 ).
   ENDMETHOD.
 
-
   METHOD check_add_value.
     m_cut->add(  2 ).
     cl_abap_unit_assert=>assert_equals( act = m_cut->get_value(  )
