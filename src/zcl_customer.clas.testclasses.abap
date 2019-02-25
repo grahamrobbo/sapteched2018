@@ -256,3 +256,122 @@ CLASS ltc_customer2 IMPLEMENTATION.
   ENDMETHOD.
 
 ENDCLASS.
+
+CLASS ltc_customer3 DEFINITION FOR TESTING
+  RISK LEVEL HARMLESS
+  DURATION SHORT.
+
+  PUBLIC SECTION.
+    CLASS-METHODS class_constructor.
+
+  PRIVATE SECTION.
+    CLASS-METHODS class_setup.
+    CLASS-METHODS class_teardown.
+
+    CLASS-DATA m_environment TYPE REF TO if_osql_test_environment.
+
+    CLASS-DATA mock_customer TYPE zif_customer_provider=>customer_type.
+
+    DATA m_cut TYPE REF TO zif_customer.
+
+    METHODS setup RAISING cx_static_check.
+
+    METHODS teardown.
+
+    METHODS check_all_properties  FOR TESTING RAISING cx_static_check.
+    METHODS singleton_by_node_key FOR TESTING RAISING cx_static_check.
+    METHODS singleton_by_bp_id    FOR TESTING RAISING cx_static_check.
+
+ENDCLASS.
+
+CLASS ltc_customer3 IMPLEMENTATION.
+  METHOD class_constructor.
+    mock_customer = VALUE #(
+            node_key = '00000000000000000000000000000000'
+            bp_id = 'TESTY'
+            company_name = 'The Test Company'
+            street = '12 MyStreet Lane'
+            city = 'My City'
+            postal_code = '12345'
+            country = 'MY'
+            country_text = 'My Country'
+    ).
+  ENDMETHOD.
+
+  METHOD class_setup.
+    m_environment = cl_osql_test_environment=>create( i_dependency_list = VALUE #( ( 'snwd_bpa' ) ( 'snwd_ad' ) ( 't005t' ) ) ).
+
+    "prepare test data
+    DATA: business_partner  TYPE snwd_bpa,
+          business_partners TYPE TABLE OF snwd_bpa WITH EMPTY KEY,
+          address           TYPE snwd_ad,
+          addresses         TYPE TABLE OF snwd_ad WITH EMPTY KEY,
+          countries         type TABLE OF t005t WITH EMPTY KEY.
+
+    MOVE-CORRESPONDING mock_customer TO business_partner.
+    business_partners = VALUE #( ( business_partner ) ).
+    m_environment->insert_test_data( business_partners ).
+
+    MOVE-CORRESPONDING mock_customer TO address.
+    addresses = VALUE #(  (  address ) ).
+    m_environment->insert_test_data(  addresses ).
+
+    countries = value #( ( spras = sy-langu land1 = mock_customer-country landx50 = mock_customer-country_text ) ).
+    m_environment->insert_test_data(  countries ).
+
+  ENDMETHOD.
+
+  METHOD class_teardown.
+    m_environment->clear_doubles(  ).
+  ENDMETHOD.
+
+  METHOD setup.
+
+    m_cut = zcl_customer=>get( mock_customer-node_key ).
+
+  ENDMETHOD.
+
+  METHOD teardown.
+  ENDMETHOD.
+
+  METHOD check_all_properties.
+    cl_abap_unit_assert=>assert_equals( act = m_cut->get_node_key(  )
+                                        exp = mock_customer-node_key ).
+    cl_abap_unit_assert=>assert_equals( act = m_cut->get_bp_id(  )
+                                        exp = mock_customer-bp_id ).
+    cl_abap_unit_assert=>assert_equals( act = m_cut->get_company_name(  )
+                                        exp = mock_customer-company_name ).
+    cl_abap_unit_assert=>assert_equals( act = m_cut->get_street(  )
+                                        exp = mock_customer-street ).
+    cl_abap_unit_assert=>assert_equals( act = m_cut->get_city(  )
+                                        exp = mock_customer-city ).
+    cl_abap_unit_assert=>assert_equals( act = m_cut->get_postal_code(  )
+                                        exp = mock_customer-postal_code ).
+    cl_abap_unit_assert=>assert_equals( act = m_cut->get_country(  )
+                                        exp = mock_customer-country ).
+    cl_abap_unit_assert=>assert_equals( act = m_cut->get_country_text(  )
+                                        exp = mock_customer-country_text ).
+
+    cl_abap_unit_assert=>assert_equals( act = m_cut->get_address(  )
+                                        exp = |{ mock_customer-street }, { mock_customer-city } { mock_customer-postal_code }, { mock_customer-country_text }| ).
+
+  ENDMETHOD.
+
+  METHOD singleton_by_node_key.
+    "when
+    DATA(customer) = zcl_customer=>get( m_cut->get_node_key(  ) ).
+
+    "then
+    cl_abap_unit_assert=>assert_equals( act = customer exp = m_cut ).
+  ENDMETHOD.
+
+  METHOD singleton_by_bp_id.
+    "when
+    DATA(customer) = zcl_customer=>get_using_bp_id( m_cut->get_bp_id(  ) ).
+
+    "then
+    cl_abap_unit_assert=>assert_equals( act = customer exp = m_cut ).
+  ENDMETHOD.
+
+
+ENDCLASS.
