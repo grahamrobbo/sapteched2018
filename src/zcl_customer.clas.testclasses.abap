@@ -141,7 +141,7 @@ CLASS ltc_customer IMPLEMENTATION.
 
 ENDCLASS.
 
-CLASS ltc_customer2 DEFINITION FOR TESTING
+CLASS ltc_customer_abap_double DEFINITION FOR TESTING
   RISK LEVEL HARMLESS
   DURATION SHORT.
 
@@ -163,7 +163,7 @@ CLASS ltc_customer2 DEFINITION FOR TESTING
 
 ENDCLASS.
 
-CLASS ltc_customer2 IMPLEMENTATION.
+CLASS ltc_customer_abap_double IMPLEMENTATION.
   METHOD class_constructor.
     test_customer_0 = VALUE #(
             node_key = '00000000000000000000000000000000'
@@ -257,7 +257,7 @@ CLASS ltc_customer2 IMPLEMENTATION.
 
 ENDCLASS.
 
-CLASS ltc_customer3 DEFINITION FOR TESTING
+CLASS ltc_customer_osql DEFINITION FOR TESTING
   RISK LEVEL HARMLESS
   DURATION SHORT.
 
@@ -268,7 +268,7 @@ CLASS ltc_customer3 DEFINITION FOR TESTING
     CLASS-METHODS class_setup.
     CLASS-METHODS class_teardown.
 
-    CLASS-DATA m_environment TYPE REF TO if_osql_test_environment.
+    CLASS-DATA osql_doubles TYPE REF TO if_osql_test_environment.
 
     CLASS-DATA mock_customer TYPE zif_customer_provider=>customer_type.
 
@@ -284,7 +284,7 @@ CLASS ltc_customer3 DEFINITION FOR TESTING
 
 ENDCLASS.
 
-CLASS ltc_customer3 IMPLEMENTATION.
+CLASS ltc_customer_osql IMPLEMENTATION.
   METHOD class_constructor.
     mock_customer = VALUE #(
             node_key = '00000000000000000000000000000000'
@@ -299,7 +299,7 @@ CLASS ltc_customer3 IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD class_setup.
-    m_environment = cl_osql_test_environment=>create( i_dependency_list = VALUE #( ( 'snwd_bpa' ) ( 'snwd_ad' ) ( 't005t' ) ) ).
+    osql_doubles = cl_osql_test_environment=>create( i_dependency_list = VALUE #( ( 'snwd_bpa' ) ( 'snwd_ad' ) ( 't005t' ) ) ).
 
     "prepare test data
     DATA: business_partner  TYPE snwd_bpa,
@@ -310,25 +310,23 @@ CLASS ltc_customer3 IMPLEMENTATION.
 
     MOVE-CORRESPONDING mock_customer TO business_partner.
     business_partners = VALUE #( ( business_partner ) ).
-    m_environment->insert_test_data( business_partners ).
+    osql_doubles->insert_test_data( business_partners ).
 
     MOVE-CORRESPONDING mock_customer TO address.
     addresses = VALUE #(  (  address ) ).
-    m_environment->insert_test_data(  addresses ).
+    osql_doubles->insert_test_data(  addresses ).
 
     countries = value #( ( spras = sy-langu land1 = mock_customer-country landx50 = mock_customer-country_text ) ).
-    m_environment->insert_test_data(  countries ).
+    osql_doubles->insert_test_data(  countries ).
 
   ENDMETHOD.
 
   METHOD class_teardown.
-    m_environment->clear_doubles(  ).
+    osql_doubles->clear_doubles(  ).
   ENDMETHOD.
 
   METHOD setup.
-
     m_cut = zcl_customer=>get( mock_customer-node_key ).
-
   ENDMETHOD.
 
   METHOD teardown.
@@ -372,6 +370,5 @@ CLASS ltc_customer3 IMPLEMENTATION.
     "then
     cl_abap_unit_assert=>assert_equals( act = customer exp = m_cut ).
   ENDMETHOD.
-
 
 ENDCLASS.
