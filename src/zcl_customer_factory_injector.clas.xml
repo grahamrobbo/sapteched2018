@@ -9,7 +9,6 @@
     <DESCRIPT>Injector class for customer factory</DESCRIPT>
     <CATEGORY>05</CATEGORY>
     <STATE>1</STATE>
-    <CLSFINAL>X</CLSFINAL>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>
     <UNICODE>X</UNICODE>

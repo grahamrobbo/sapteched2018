@@ -26,8 +26,6 @@ CLASS zcl_customer_provider_factory DEFINITION
 
     CLASS-DATA providers TYPE TABLE OF provider_type .
 
-    CLASS-METHODS reset_customer_providers.
-
 ENDCLASS.
 
 CLASS zcl_customer_provider_factory IMPLEMENTATION.
@@ -42,10 +40,6 @@ CLASS zcl_customer_provider_factory IMPLEMENTATION.
 
     r_provider ?= provider-instance.
 
-  ENDMETHOD.
-
-  METHOD reset_customer_providers.
-    CLEAR zcl_customer_provider_factory=>providers.
   ENDMETHOD.
 
   METHOD get_node_key_from_bp_id.

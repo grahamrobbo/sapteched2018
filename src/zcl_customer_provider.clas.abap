@@ -34,21 +34,19 @@ CLASS zcl_customer_provider IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD load_data.
-    SELECT bp~node_key, bp~bp_id, bp~company_name,
+    SELECT SINGLE bp~node_key, bp~bp_id, bp~company_name,
       ad~street, ad~city, ad~postal_code, ad~country
-      UP TO 1 ROWS
       FROM snwd_bpa AS bp
         INNER JOIN snwd_ad AS ad
         ON bp~address_guid = ad~node_key
-      INTO CORRESPONDING FIELDS OF @me->customer_data
+      INTO CORRESPONDING FIELDS of @me->customer_data
       WHERE bp~node_key = @node_key.
 
-      IF sy-subrc NE 0.
-        RAISE EXCEPTION TYPE cx_abap_invalid_value
-          EXPORTING
-            textid = cx_abap_invalid_value=>cx_root.
-      ENDIF.
-    ENDSELECT.
+    IF sy-subrc NE 0.
+      RAISE EXCEPTION TYPE cx_abap_invalid_value
+        EXPORTING
+          textid = cx_abap_invalid_value=>cx_root.
+    ENDIF.
 
   ENDMETHOD.
 
