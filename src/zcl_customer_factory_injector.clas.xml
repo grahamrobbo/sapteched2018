@@ -4,7 +4,6 @@
   <asx:values>
    <VSEOCLASS>
     <CLSNAME>ZCL_CUSTOMER_FACTORY_INJECTOR</CLSNAME>
-    <VERSION>1</VERSION>
     <LANGU>E</LANGU>
     <DESCRIPT>Injector class for customer factory</DESCRIPT>
     <CATEGORY>05</CATEGORY>

@@ -4,7 +4,6 @@
   <asx:values>
    <VSEOINTERF>
     <CLSNAME>ZIF_CUSTOMER_PROVIDER</CLSNAME>
-    <VERSION>1</VERSION>
     <LANGU>E</LANGU>
     <DESCRIPT>Customer Provider Interface</DESCRIPT>
     <EXPOSURE>2</EXPOSURE>
