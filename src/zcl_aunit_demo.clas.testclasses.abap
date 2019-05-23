@@ -30,18 +30,18 @@ CLASS ltc_aunit_demo IMPLEMENTATION.
                                         exp = value ).
   ENDMETHOD.
 
+  METHOD check_value.
+    given_value( 42 ).
+
+    value_should_be( 42 ).
+  ENDMETHOD.
+
   METHOD check_add_value.
     given_value( 6 ).
 
     m_cut->add(  4 ).
 
     value_should_be( 10 ).
-  ENDMETHOD.
-
-  METHOD check_value.
-    given_value( 42 ).
-
-    value_should_be( 42 ).
   ENDMETHOD.
 
 
