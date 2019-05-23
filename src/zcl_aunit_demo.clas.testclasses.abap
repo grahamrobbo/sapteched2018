@@ -6,9 +6,13 @@ CLASS ltc_aunit_demo DEFINITION FOR TESTING
 
     DATA m_cut TYPE REF TO zcl_aunit_demo.
 
-    METHODS setup RAISING cx_static_check.
+    METHODS given_value
+      IMPORTING
+        value TYPE int4.
 
-    METHODS teardown.
+    METHODS value_should_be
+      IMPORTING
+        value TYPE int4.
 
     METHODS check_value        FOR TESTING RAISING cx_static_check.
     METHODS check_add_value    FOR TESTING RAISING cx_static_check.
@@ -17,23 +21,28 @@ ENDCLASS.
 
 CLASS ltc_aunit_demo IMPLEMENTATION.
 
-  METHOD setup.
-    m_cut = NEW zcl_aunit_demo( 3 ).
+  METHOD given_value.
+    m_cut = NEW zcl_aunit_demo( value ).
   ENDMETHOD.
 
-  METHOD teardown.
-
-  ENDMETHOD.
-
-  METHOD check_value.
+  METHOD value_should_be.
     cl_abap_unit_assert=>assert_equals( act = m_cut->get_value(  )
-                                        exp = 3 ).
+                                        exp = value ).
   ENDMETHOD.
 
   METHOD check_add_value.
-    m_cut->add(  2 ).
-    cl_abap_unit_assert=>assert_equals( act = m_cut->get_value(  )
-                                        exp = 5 ).
+    given_value( 6 ).
+
+    m_cut->add(  4 ).
+
+    value_should_be( 10 ).
   ENDMETHOD.
+
+  METHOD check_value.
+    given_value( 42 ).
+
+    value_should_be( 42 ).
+  ENDMETHOD.
+
 
 ENDCLASS.
